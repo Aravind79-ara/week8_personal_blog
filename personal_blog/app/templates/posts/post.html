@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p class="text-muted">
+    By {{ post.author.username }} | {{ post.timestamp.strftime('%d %b %Y') }}
+</p>
+
+<p>{{ post.content }}</p>
+
+<hr>
+<h4>Comments</h4>
+
+{% for comment in post.comments %}
+<div class="border p-2 mb-2">
+    <small>{{ comment.timestamp.strftime('%d %b %Y') }}</small>
+    <p>{{ comment.content }}</p>
+</div>
+{% else %}
+<p>No comments yet.</p>
+{% endfor %}
+
+{% if current_user.is_authenticated %}
+<form method="POST" action="{{ url_for('comments.add', post_id=post.id) }}">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.content(class="form-control", rows=3) }}
+    </div>
+    {{ form.submit(class="btn btn-secondary") }}
+</form>
+{% endif %}
+{% endblock %}
